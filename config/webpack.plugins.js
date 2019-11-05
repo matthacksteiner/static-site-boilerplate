@@ -15,6 +15,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const RobotstxtPlugin = require('robotstxt-webpack-plugin');
 const SitemapPlugin = require('sitemap-webpack-plugin').default;
+const ImageminWebpWebpackPlugin = require("imagemin-webp-webpack-plugin");
 
 const config = require('./site.config');
 
@@ -136,6 +137,19 @@ const google = new GoogleAnalyticsPlugin({
   id: config.googleAnalyticsUA,
 });
 
+const webp = new ImageminWebpWebpackPlugin({
+  config: [{
+    test: /\.(jpe?g|png)/,
+    options: {
+      quality: 75
+    }
+  }],
+  overrideExtension: true,
+  detailedLogs: true,
+  silent: true,
+  strict: true
+});
+
 module.exports = [
   clean,
   stylelint,
@@ -148,4 +162,5 @@ module.exports = [
   config.googleAnalyticsUA && google,
   webpackBar,
   config.env === 'development' && hmr,
+  webp,
 ].filter(Boolean);
